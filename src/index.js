@@ -4,14 +4,24 @@ const app = express();
 import { PORT } from "./constants.js"
 import connectDB  from "./db/index.js";
 
+connectDB()
+.then(
+  () =>{
+    app.listen(PORT || 3000, () => {
+      console.log(`Server is running on PORT ${PORT}`)
+    })
+  }
+)
+.catch(
+  (err) => {
+    console.log("DB connection failed !!!", err);
+  }
+)
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on port http://localhost:${PORT}`);
-  connectDB();
-})
-
-
-
+// app.listen(PORT, () => {
+//   console.log(`Server is listening on port http://localhost:${PORT}`);
+//   connectDB();
+// })
 
 /*
 import express from "express";

@@ -10,7 +10,7 @@ import { MONGODB_URL } from "../constants.js"
 const connectDB = async () => {
   try {
     await mongoose.connect(MONGODB_URL);
-    console.log("DB connected successfully!")
+    console.log("Message from db folder : DB connected successfully!")
   } catch (error) {
     console.error("DB Errro", error);
     process.exit(1);
