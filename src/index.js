@@ -1,7 +1,6 @@
 import express from "express";
-const app = express();
-
-import { PORT } from "./constants.js"
+import { app } from "./app.js";
+import { PORT } from "./constants.js";
 import connectDB  from "./db/index.js";
 
 connectDB()

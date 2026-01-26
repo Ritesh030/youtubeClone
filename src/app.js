@@ -35,3 +35,12 @@ app.use(express.static("public"));
 // Parse cookies sent by the client
 // Makes cookies available in req.cookies
 app.use(cookieParser());
+
+// Routes import
+import userRouter from "./routes/user.routes.js"
+
+//routes declaration
+app.use("/api/v1/user", userRouter) //- /api/v1/user -- this is standared practice
+// http:localhost:3000/api/v1/user/--------------
+
+export {app}
