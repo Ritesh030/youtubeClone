@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import jwk from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import { ACCESS_TOKEN_SECRET } from "../constants.js"
 import { ACCESS_TOKEN_EXPIRY } from "../constants.js"
@@ -55,7 +55,7 @@ const userSchema = new Schema(
 
 // Run this middleware BEFORE saving a user document to the database
 // we cannot use arrow function here because arrow fuction does not have reference to (this) keyword
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
 
     // Only hash the password if it was created or changed
     // This prevents re-hashing an already-hashed password on every save like email, username, etc.. updates
@@ -65,9 +65,6 @@ userSchema.pre("save", async function (next) {
         // Higher = more secure but slower
         this.password = await bcrypt.hash(this.password, 10); //// Wait for the async operation to finish before using its result
     }
-
-    // Move on to the next middleware or complete the save operation
-    next();
 });
 
 // inject new method for cheking the password
