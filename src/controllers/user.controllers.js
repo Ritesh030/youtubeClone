@@ -67,7 +67,6 @@ const registerUser = asyncHandler(async (req, res) => {
       // step - 6 -->
       const avatar = await uploadOnCloudinary(avatarLocalPath)
       const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-      console.log(avatar);
       
       if(!avatar){
             throw new apiError(400, "Avatar file not uploaded to cloudinary")
@@ -163,7 +162,7 @@ const loginUser = asyncHandler(async (req,res) => {
       )
 })
 const logoutUser = asyncHandler(async(req,res) => {
-      // now i have the access of req.user here because of the autho middleware(as it adds the user to req.user if the user it identified) and route (logout)
+      // now i have the access of req.user here because of the autho middleware(as it adds the user to req.user if the user it identified) and in the middleware auth is called first route (logout)
 
       await User.findByIdAndUpdate(
             req.user._id,
@@ -197,7 +196,7 @@ const refreshAccessToken = asyncHandler(async(req,res) => {
       }
 
       try {
-            const decodedToken = JsonWebTokenError.verify(
+            const decodedToken = jwt.verify(
                   incomingRefreshToken,
                   REFRESH_TOKEN_SECRET
             )
