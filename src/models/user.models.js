@@ -48,6 +48,10 @@ const userSchema = new Schema(
             },
             refreshToken: {
                   type: String
+            },
+            usernameLastChangedAt: {
+                  type: Date,
+                  default: null
             }
       }, { timestamps: true }
 )

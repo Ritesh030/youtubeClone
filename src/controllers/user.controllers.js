@@ -6,6 +6,7 @@ import { apiResponse } from "../utils/apiResponse.js";
 import { isgmail } from "../utils/isgmail.js";
 import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../constants.js";
+import { json } from "express";
 
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -233,4 +234,126 @@ const refreshAccessToken = asyncHandler(async(req,res) => {
             throw new apiError(401, error?.message || "Invailid refresh token")
       }
 })
-export { registerUser, loginUser, logoutUser, refreshAccessToken }
+
+const changeCurrentPassword = asyncHandler(async(req,res) => {
+      const {oldPassword, newPassword, confirmPassword} = req.body
+      
+      const user = await User.findById(req.user?._id);
+
+      const ispassswordvalid = await user.isPasswordCorrect(oldPassword);
+      if(!ispassswordvalid){
+            throw new apiError(400, "Incorrect oldPassword");
+      }
+
+      if(newPassword === oldPassword){
+            throw new apiError(400, "Use different password");
+      }
+      if(newPassword !== confirmPassword){
+            throw new apiError(400, "newPassword and confirmPassword fields should be same")
+      }
+
+      user.password = newPassword;
+      await user.save({validateBeforeSave: false})
+      
+      return res
+      .status(200)
+      .json(new apiResponse(200, {},"Password changed successfully"))
+})
+
+const updateUserDetails = asyncHandler(async(req,res) => {
+      const {username, fullName, email} = req.body;
+
+      if(!(username || fullName || email)){
+            return new apiError(400, "One of the field is required for updation")
+      }
+
+      const user = await User.findById(req.user?._id);
+      if(!user){
+            throw new apiError(400,"user not found");
+      }
+
+      const oneMonth = 30 * 24 * 60 * 60 * 1000;
+
+      if(username && username !== user.username && user.usernameLastChangedAt && 
+            Date.now() - user.usernameLastChangedAt.getTime() < oneMonth
+      ){
+            throw new apiError(400, "Username can only be updated once per month")
+      }
+
+      user.username = username ?? user.username;
+      user.fullName = fullName ?? user.fullName;
+      user.email = email ?? user.email;
+
+      if(username && username !== user.username){
+            user.usernameLastChangedAt = new Date();
+      }
+
+      await user.save({validateBeforeSave:false}).select("-password -refreshToken")
+
+      return res
+      .status(200)
+      .json(new apiResponse(200, user, "Account Details Updated successfully"))
+})
+
+const updateUserAvatar = asyncHandler(async(req,res) => {
+      const avatarLocalPath = req.file?.path;
+      if(!avatarLocalPath){
+            throw new apiError(400, "avatar file is missing while updation")
+      }
+
+      const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+      if(!avatar.url){
+            throw new apiError(400, "Error while uploading avatar file to cloudinary while updation")
+      }
+
+      const user = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                  $set: {
+                        avatar: avatar.url
+                  }
+            },
+            {new: true}
+      ).select("-password -refreshToken")
+
+      return res
+      .status(200)
+      .json(new apiResponse(200, user, "Avatar file updated successfully"))
+})
+
+const updateUserCoverImage = asyncHandler(async(req,res) => {
+      const coverImageLocalPath = req.file?.path
+      if(!coverImageLocalPath){
+            throw new apiError(400, "coverimage file is required for updation")
+      }
+
+      const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+      if(!coverImage.url){
+            throw new apiError(400,"error while uploading coverimage while updation")
+      }
+
+      const user = await User.findByIdAndUpdate(
+            req.user?._id,
+            {
+                  $set: {
+                        coverImage: coverImage.url
+                  }
+            },
+            {new: true}
+      ).select("-password -refreshToken")
+
+      return res
+      .status(200)
+      .json(new apiResponse(200, user, "coverImage updated successfully"))
+})
+export { 
+      registerUser,
+      loginUser, 
+      logoutUser, 
+      refreshAccessToken, 
+      changeCurrentPassword, 
+      updateUserDetails, 
+      updateUserAvatar,
+      updateUserCoverImage
+}
