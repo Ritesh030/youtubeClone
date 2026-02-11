@@ -5,6 +5,7 @@ import { ACCESS_TOKEN_SECRET } from "../constants.js"
 import { ACCESS_TOKEN_EXPIRY } from "../constants.js"
 import { REFRESH_TOKEN_SECRET } from "../constants.js"
 import { REFRESH_TOKEN_EXPIRY } from "../constants.js"
+import { type } from "os";
 
 const userSchema = new Schema(
       {
@@ -30,11 +31,22 @@ const userSchema = new Schema(
                   index: true
             },
             avatar: {
-                  type: String, // Cloudinary url
-                  required: true
+                  url: {
+                        type: String,
+                        required: true
+                  },
+                  publicId: {
+                        type: String,
+                        required: true
+                  }
             },
             coverImage: {
-                  type: String, // Cloudinary url
+                  url: {
+                        type: String
+                  },
+                  publicId: {
+                        type: String
+                  }
             },
             watchHistory: [
                   {

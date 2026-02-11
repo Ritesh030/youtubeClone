@@ -1,13 +1,14 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiError } from "../utils/apiErrors.js";
 import { User } from "../models/user.models.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js"; 
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js"; 
 import { apiResponse } from "../utils/apiResponse.js";
 import { isgmail } from "../utils/isgmail.js";
 import jwt from "jsonwebtoken";
 import { REFRESH_TOKEN_SECRET } from "../constants.js";
 import { json } from "express";
-
+import { url } from "inspector";
+import fs from 'fs'
 
 const registerUser = asyncHandler(async (req, res) => {
       //// steps for user registration
@@ -53,13 +54,16 @@ const registerUser = asyncHandler(async (req, res) => {
             $or: [{ username }, { email }]
       }) // this will return true if any one of them exists
 
-      if (existedUser) {
-            throw new apiError(409, "User already exists with this username or email")
-      }
       
       // step - 5 -->
       const avatarLocalPath = req.files?.avatar?.[0]?.path; // req.files is provited by multer      
       const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+      
+      if (existedUser) {
+            fs.unlinkSync(avatarLocalPath);
+            fs.unlinkSync(coverImageLocalPath);
+            throw new apiError(409, "User already exists with this username or email")
+      }
 
       if(!avatarLocalPath){
             throw new apiError(400, "Avatar file is required")
@@ -67,7 +71,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
       // step - 6 -->
       const avatar = await uploadOnCloudinary(avatarLocalPath)
-      const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+
+      let coverImage = null;
+      if (coverImageLocalPath) {
+            coverImage = await uploadOnCloudinary(coverImageLocalPath);
+      }
       
       if(!avatar){
             throw new apiError(400, "Avatar file not uploaded to cloudinary")
@@ -76,8 +84,14 @@ const registerUser = asyncHandler(async (req, res) => {
       // step - 7 -->
       const userInstance = await User.create({
             fullName,
-            avatar: avatar.url,
-            coverImage: coverImage?.url || "", // as coverimage may or may not be available
+            avatar:{
+                  url: avatar.url,
+                  publicId: avatar.publicId
+            },
+            coverImage: {
+                  url: coverImage?.url || "",
+                  publicId: coverImage?.publicId || ""
+            },
             email,
             password,
             username: username.toLowerCase()
@@ -217,16 +231,16 @@ const refreshAccessToken = asyncHandler(async(req,res) => {
                   secure: true
             }
       
-            const {accessToken, newRefreshToken} = await generateAccessAndRefreshToken(user._id);
+            const {accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
       
             return res
             .status(200)
             .cookie("accessToken",accessToken,options)
-            .cookie("refreshToken", newRefreshToken,options)
+            .cookie("refreshToken", refreshToken ,options)
             .json(
                   new apiResponse(
                         200,
-                        {accessToken, refreshToken: newRefreshToken},
+                        {accessToken, refreshToken: refreshToken },
                         "Access token refreshed"
                   )
             )
@@ -280,11 +294,12 @@ const updateUserDetails = asyncHandler(async(req,res) => {
             throw new apiError(400, "Username can only be updated once per month")
       }
 
+      const oldUsername = user.username;
       user.username = username ?? user.username;
       user.fullName = fullName ?? user.fullName;
       user.email = email ?? user.email;
 
-      if(username && username !== user.username){
+      if(username && username !== oldUsername){
             user.usernameLastChangedAt = new Date();
       }
 
@@ -301,21 +316,32 @@ const updateUserAvatar = asyncHandler(async(req,res) => {
             throw new apiError(400, "avatar file is missing while updation")
       }
 
-      const avatar = await uploadOnCloudinary(avatarLocalPath)
+      const oldUser = await User.findById(req.user._id);
+      if(!oldUser){
+            throw new apiError(400, "User not found while updating the avatar file")
+      }
 
+      const avatar = await uploadOnCloudinary(avatarLocalPath)
       if(!avatar.url){
             throw new apiError(400, "Error while uploading avatar file to cloudinary while updation")
       }
+
 
       const user = await User.findByIdAndUpdate(
             req.user?._id,
             {
                   $set: {
-                        avatar: avatar.url
+                        avatar: {
+                              url: avatar.url,
+                              publicId: avatar.publicId
+                        }
                   }
             },
             {new: true}
       ).select("-password -refreshToken")
+
+      // cleanup — best effort
+      deleteFromCloudinary(oldUser.avatar.publicId);
 
       return res
       .status(200)
@@ -328,25 +354,37 @@ const updateUserCoverImage = asyncHandler(async(req,res) => {
             throw new apiError(400, "coverimage file is required for updation")
       }
 
+      const oldUser = await User.findById(req.user._id);
+      if(!oldUser){
+            throw new apiError(400, "User not found while updating the avatar file")
+      }
+
       const coverImage = await uploadOnCloudinary(coverImageLocalPath)
       if(!coverImage.url){
-            throw new apiError(400,"error while uploading coverimage while updation")
+            throw new apiError(400, "Error while uploading coverImage file to cloudinary while updation")
       }
 
       const user = await User.findByIdAndUpdate(
             req.user?._id,
             {
                   $set: {
-                        coverImage: coverImage.url
+                        coverImage:{
+                              url: coverImage.url,
+                              publicId: coverImage.publicId
+                        }
                   }
             },
             {new: true}
       ).select("-password -refreshToken")
 
+      // cleanup step
+      deleteFromCloudinary(oldUser.coverImage.publicId);
+
       return res
       .status(200)
       .json(new apiResponse(200, user, "coverImage updated successfully"))
 })
+
 export { 
       registerUser,
       loginUser, 
