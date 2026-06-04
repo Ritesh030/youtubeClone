@@ -18,6 +18,8 @@
     "prettier": "^3.8.0"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.3.0",
+    "axios": "^1.6.2",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
     "cookie-parser": "^1.4.7",

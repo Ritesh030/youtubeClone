@@ -1,0 +1,165 @@
+{
+  "info": {
+    "name": "YouTube Clone - Video Summarization API",
+    "description": "AI-powered video summarization using AssemblyAI and Google Gemini",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer"
+  },
+  "item": [
+    {
+      "name": "Video Summarization",
+      "item": [
+        {
+          "name": "Generate Video Summary",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/videos/{{videoId}}/generate-summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "videos",
+                "{{videoId}}",
+                "generate-summary"
+              ]
+            },
+            "description": "Submit a video for AI summarization\n\nProcess:\n1. Submits video URL to AssemblyAI for transcription\n2. Polls AssemblyAI until transcription is complete\n3. Retrieves the full transcript\n4. Sends transcript to Google Gemini for summary generation\n5. Stores summary and transcript in MongoDB\n6. Returns the generated summary\n\nExpected Response Time: 30-120 seconds (depends on video length)\n\nStatus Codes:\n- 200: Summary generated successfully\n- 400: Invalid video ID or missing video URL\n- 404: Video not found\n- 408: Transcription polling timeout\n- 500: Server error"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8000/api/v1/videos/670a1c1234abcd5678ef9012/generate-summary",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8000",
+                  "path": [
+                    "api",
+                    "v1",
+                    "videos",
+                    "670a1c1234abcd5678ef9012",
+                    "generate-summary"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"videoId\": \"670a1c1234abcd5678ef9012\",\n    \"summary\": \"This video provides a comprehensive tutorial on Node.js fundamentals. Key points include: understanding the event-driven architecture, working with modules and packages, and implementing asynchronous patterns. The presenter covers essential concepts like callbacks, promises, and async/await syntax. Important conclusions highlight that mastering these basics is crucial for backend development.\",\n    \"generatedAt\": \"2026-06-04T10:30:00.000Z\"\n  },\n  \"message\": \"Video summary generated successfully\",\n  \"statusCode\": 200\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Video Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/videos/{{videoId}}/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "videos",
+                "{{videoId}}",
+                "summary"
+              ]
+            },
+            "description": "Retrieve a previously generated summary for a video\n\nNote: Summary must be generated first using the POST endpoint\n\nStatus Codes:\n- 200: Summary retrieved successfully\n- 400: Invalid video ID format\n- 404: Video not found OR summary not generated yet\n- 500: Server error"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8000/api/v1/videos/670a1c1234abcd5678ef9012/summary",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8000",
+                  "path": [
+                    "api",
+                    "v1",
+                    "videos",
+                    "670a1c1234abcd5678ef9012",
+                    "summary"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"data\": {\n    \"videoId\": \"670a1c1234abcd5678ef9012\",\n    \"summary\": \"This video provides a comprehensive tutorial on Node.js fundamentals...\",\n    \"generatedAt\": \"2026-06-04T10:30:00.000Z\"\n  },\n  \"message\": \"Video summary retrieved successfully\",\n  \"statusCode\": 200\n}"
+            },
+            {
+              "name": "Not Generated Yet",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8000/api/v1/videos/670a1c1234abcd5678ef9012/summary",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8000",
+                  "path": [
+                    "api",
+                    "v1",
+                    "videos",
+                    "670a1c1234abcd5678ef9012",
+                    "summary"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "cookie": [],
+              "body": "{\n  \"data\": null,\n  \"message\": \"Summary has not been generated for this video yet\",\n  \"statusCode\": 404\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "videoId",
+      "value": "670a1c1234abcd5678ef9012",
+      "type": "string"
+    }
+  ]
+}

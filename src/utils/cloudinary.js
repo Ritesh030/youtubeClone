@@ -17,7 +17,7 @@ const uploadOnCloudinary = async (localFilePath) => {
 
     const response = await cloudinary.uploader.upload(
       localFilePath,
-      { resource_type: "auto" }
+      { resource_type: "auto" } // it tells Cloudinary: "I'm sending you something; you figure out if it's an image, a video, or a raw PDF."
     );
 
     fs.unlinkSync(localFilePath);

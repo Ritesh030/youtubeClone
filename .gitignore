@@ -118,3 +118,13 @@ dist
 .pnp.*
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
+
+# Local Documentation Files (Keep Readme.md only in repo)
+note.md
+README_CREATION_SUMMARY.md
+README_SUMMARIZATION.md
+README_SHOWCASE.md
+SUMMARIZATION_FEATURE_GUIDE.md
+SETUP_CHECKLIST.md
+IMPLEMENTATION_COMPLETE.md
+VERIFICATION_REPORT.md

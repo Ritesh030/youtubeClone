@@ -20,7 +20,7 @@ app.use(cors({
 
 // Tell Express to accept incoming JSON request bodies
 // and reject anything larger than 16KB for security
-app.use(express.json({ limit: "16kb" })); 
+app.use(express.json({ limit: "16kb" }));
 
 // Tell Express to accept URL-encoded form data
 // extended:true allows nested objects in form data
@@ -38,9 +38,13 @@ app.use(cookieParser());
 
 // Routes import
 import userRouter from "./routes/user.routes.js"
+import summaryRoutes from "./routes/summary.routes.js"
 
 //routes declaration
 app.use("/api/v1/user", userRouter) //- /api/v1/user -- this is standared practice
+app.use("/api/v1/videos", summaryRoutes) //- /api/v1/videos -- video summarization routes
 // http:localhost:3000/api/v1/user/--------------
+// http:localhost:3000/api/v1/videos/:videoId/generate-summary
+// http:localhost:3000/api/v1/videos/:videoId/summary
 
-export {app}
+export { app }
