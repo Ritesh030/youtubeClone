@@ -102,39 +102,58 @@ Unlike a microservices system, this project runs as **one Express application** 
 ## 🏗️ Architecture
 
 ```mermaid
+---
+title: 🎬 Video Platform Backend — API & AI Summarization Pipeline
+---
 flowchart TB
-    Client["🖥️ CLIENT<br/>Web · Mobile · Postman · cURL"]
+    Client(["<b style='font-size:20px'>🖥️ CLIENT</b><br/><small>Web · Mobile · Postman · cURL</small>"])
 
-    Client -->|"All Requests → :8000"| App
+    Client ==>|"All Requests → :8000"| App
 
-    subgraph App["🎬 EXPRESS APP  [ :8000 ]"]
+    subgraph App["🎬 EXPRESS APP · :8000"]
         direction LR
-        M1["CORS +<br/>Body/Cookie Parsing"] --> M2["Router<br/>/api/v1/user, /api/v1/videos"] --> M3["Controller<br/>Validation & Response"] --> M4["Service Layer<br/>Business Logic"]
+        M1["<b style='font-size:18px'>CORS +<br/>Parsing</b><br/><small>Body / Cookie</small>"] --> M2["<b style='font-size:18px'>Router</b><br/><small>/api/v1/user<br/>/api/v1/videos</small>"] --> M3["<b style='font-size:18px'>Controller</b><br/><small>Validation & Response</small>"] --> M4["<b style='font-size:18px'>Service<br/>Layer</b><br/><small>Business Logic</small>"]
     end
 
-    M4 --> M5["Repository Layer<br/>DB Queries"]
-    M5 --> DB[("MongoDB<br/>(users, videos,<br/>subscriptions)")]
+    M4 --> M5["<b style='font-size:20px'>🗄️ REPOSITORY<br/>LAYER</b><br/><small>DB Queries</small>"]
+    M5 --> DB[("<b style='font-size:18px'>MongoDB</b><br/><small>users · videos<br/>subscriptions</small>")]
 
-    M4 -->|"avatar / cover upload"| Cloudinary["☁️ Cloudinary<br/>Avatar / Cover Images"]
+    M4 -.->|"avatar / cover upload"| Cloudinary(["<b style='font-size:18px'>☁️ CLOUDINARY</b><br/><small>Avatar / Cover Images</small>"])
 
     M4 ==>|"POST /generate-summary"| AIPipeline
 
     subgraph AIPipeline["🤖 AI SUMMARIZATION PIPELINE"]
         direction LR
-        AssemblyAI["🎙️ AssemblyAI<br/><b>Step 1 — Speech-to-Text</b><br/>Transcribes video audio"]
-        Gemini["✨ Gemini 2.5 Flash<br/><b>Step 2 — Summarization</b><br/>Generates structured summary"]
-        AssemblyAI ==>|"transcript"| Gemini
+        AssemblyAI["<b style='font-size:18px'>🎙️ AssemblyAI</b><br/><small><b>Step 1 — Speech-to-Text</b><br/>Transcribes video audio</small>"] ==>|"transcript"| Gemini["<b style='font-size:18px'>✨ Gemini 2.5<br/>Flash</b><br/><small><b>Step 2 — Summarization</b><br/>Generates structured summary</small>"]
     end
 
     AIPipeline ==>|"summary saved"| M5
 
-    style Client fill:#1f2937,stroke:#60a5fa,color:#fff
-    style App fill:#111827,stroke:#a78bfa,color:#fff
-    style DB fill:#1e3a8a,stroke:#60a5fa,color:#fff
-    style Cloudinary fill:#7c2d12,stroke:#fb923c,color:#fff
-    style AIPipeline fill:#1e0a3c,stroke:#c084fc,stroke-width:3px,color:#fff
-    style AssemblyAI fill:#312e81,stroke:#818cf8,stroke-width:2px,color:#fff
-    style Gemini fill:#4c1d95,stroke:#c084fc,stroke-width:2px,color:#fff
+    classDef client fill:#0a0f1e,stroke:#38bdf8,stroke-width:2px,color:#e0f2fe
+    classDef appBg fill:#0b0f1a,stroke:#a78bfa,stroke-width:2px,color:#ede9fe
+    classDef parser fill:#241033,stroke:#e879f9,stroke-width:1.5px,color:#fae8ff
+    classDef router fill:#0c2340,stroke:#38bdf8,stroke-width:1.5px,color:#dbeafe
+    classDef controller fill:#0c2340,stroke:#38bdf8,stroke-width:1.5px,color:#dbeafe
+    classDef service fill:#1a0a10,stroke:#fb7185,stroke-width:1.5px,color:#ffe4e6
+    classDef repo fill:#241708,stroke:#fbbf24,stroke-width:2px,color:#fef3c7
+    classDef db fill:#08132e,stroke:#60a5fa,stroke-width:2px,color:#dbeafe
+    classDef cloud fill:#2a1206,stroke:#fb923c,stroke-width:2px,color:#ffedd5
+    classDef aiBg fill:#160a2e,stroke:#c084fc,stroke-width:3px,color:#f3e8ff
+    classDef stt fill:#181154,stroke:#818cf8,stroke-width:2px,color:#e0e7ff
+    classDef llm fill:#2c0f5c,stroke:#c084fc,stroke-width:2px,color:#f3e8ff
+
+    class Client client
+    class App appBg
+    class M1 parser
+    class M2 router
+    class M3 controller
+    class M4 service
+    class M5 repo
+    class DB db
+    class Cloudinary cloud
+    class AIPipeline aiBg
+    class AssemblyAI stt
+    class Gemini llm
 ```
 
 ---
