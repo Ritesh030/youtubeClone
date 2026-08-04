@@ -9,19 +9,6 @@ import {
 } from "../repositories/video.repository.js";
 import { apiError } from "../utils/apiErrors.js";
 
-/**
- * Generate summary for a video
- * Step 1: Validate video exists and has URL
- * Step 2: Submit video URL to AssemblyAI for transcription
- * Step 3: Poll and wait for transcription completion
- * Step 4: Get transcript text
- * Step 5: Generate summary using Gemini AI
- * Step 6: Store summary and transcript in database
- * Step 7: Return summary
- * @param {string} videoId - The video ID
- * @returns {Promise<Object>} - Object with summary, transcript, and generatedAt
- * @throws {apiError} - If any step fails
- */
 const generateAndStoreSummary = async (videoId) => {
       try {
             // Step 1: Validate video exists and has URL
@@ -29,6 +16,10 @@ const generateAndStoreSummary = async (videoId) => {
 
             if (!video.videoFile || video.videoFile.trim() === "") {
                   throw new apiError(400, "Video file URL not found");
+            }
+
+            if (video.summary) {
+                  return video.summary;
             }
 
             // Step 2: Submit video URL to AssemblyAI

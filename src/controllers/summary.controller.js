@@ -6,13 +6,6 @@ import {
       getExistingSummary,
 } from "../services/summary.service.js";
 
-/**
- * Generate AI summary for a video
- * POST /api/v1/videos/:videoId/generate-summary
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @throws {apiError} - If validation or processing fails
- */
 const generateSummary = asyncHandler(async (req, res) => {
       try {
             const { videoId } = req.params;
@@ -53,13 +46,6 @@ const generateSummary = asyncHandler(async (req, res) => {
       }
 });
 
-/**
- * Retrieve existing summary for a video
- * GET /api/v1/videos/:videoId/summary
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @throws {apiError} - If validation or retrieval fails
- */
 const getSummary = asyncHandler(async (req, res) => {
       try {
             const { videoId } = req.params;

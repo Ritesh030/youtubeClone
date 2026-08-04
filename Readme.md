@@ -1,139 +1,256 @@
-# 🎬 YouTube Clone Backend
-
 <div align="center">
 
-[![Node.js](https://img.shields.io/badge/Node.js-v18+-green?style=for-the-badge&logo=node.js)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-v5.2.1-black?style=for-the-badge&logo=express)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-v9.1.4-green?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
-[![License](https://img.shields.io/badge/License-ISC-blue?style=for-the-badge)](./package.json)
-[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)](.)
+```
+██╗   ██╗ ██████╗ ██╗   ██╗████████╗██╗   ██╗██████╗ ███████╗
+╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝██║   ██║██╔══██╗██╔════╝
+ ╚████╔╝ ██║   ██║██║   ██║   ██║   ██║   ██║██████╔╝█████╗  
+  ╚██╔╝  ██║   ██║██║   ██║   ██║   ██║   ██║██╔══██╗██╔══╝  
+   ██║   ╚██████╔╝╚██████╔╝   ██║   ╚██████╔╝██████╔╝███████╗
+   ╚═╝    ╚═════╝  ╚═════╝    ╚═╝    ╚═════╝ ╚═════╝ ╚══════╝
 
-**A futuristic, production-ready backend for video streaming platform with AI-powered summarization**
+ ██████╗██╗      ██████╗ ███╗   ██╗███████╗
+██╔════╝██║     ██╔═══██╗████╗  ██║██╔════╝
+██║     ██║     ██║   ██║██╔██╗ ██║█████╗  
+██║     ██║     ██║   ██║██║╚██╗██║██╔══╝  
+╚██████╗███████╗╚██████╔╝██║ ╚████║███████╗
+ ╚═════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+```
 
-[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🏗️ Architecture](#-architecture) • [🔗 API Reference](#-api-reference)
+# 🎬 YouTube Clone Backend
+### *A Layered, Production-Ready Video Platform API with AI Summarization*
+
+---
+
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini_2.5-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
+
+![Layers](https://img.shields.io/badge/Architecture-Layered_Monolith-blueviolet?style=flat-square)
+![Server Port](https://img.shields.io/badge/Server-:8000-blue?style=flat-square)
+![Auth](https://img.shields.io/badge/Auth-JWT_(Access%20%2B%20Refresh)-red?style=flat-square)
+![Storage](https://img.shields.io/badge/Media-Cloudinary-orange?style=flat-square)
+![AI](https://img.shields.io/badge/AI-Gemini%20%2B%20AssemblyAI-8e44ad?style=flat-square)
 
 </div>
 
 ---
 
-## ✨ Overview
+## 📋 Table of Contents
 
-**YouTube Clone Backend** is a modern, enterprise-grade Node.js backend service that powers a YouTube-like video platform. It features comprehensive user management, secure authentication, media handling, and cutting-edge **AI-powered video summarization** using Google Gemini and AssemblyAI.
+- [System Overview](#-system-overview)
+- [Key Features](#-key-features)
+- [Architecture](#-architecture)
+- [Layer Responsibilities](#-layer-responsibilities)
+- [Tech Stack](#-tech-stack)
+- [Prerequisites](#-prerequisites)
+- [Installation & Setup](#-installation--setup)
+- [Environment Configuration](#-environment-configuration)
+- [API Routes](#-api-routes)
+- [Authentication Flow](#-authentication-flow)
+- [AI Summarization Flow](#-ai-summarization-flow)
+- [Project Structure](#-project-structure)
+- [Error Reference](#-error-reference)
+- [Troubleshooting](#-troubleshooting)
+- [Roadmap](#-roadmap)
 
-Built with production standards in mind, this project demonstrates clean architecture, comprehensive error handling, and scalable design patterns.
+---
+
+## 🌐 System Overview
+
+The **YouTube Clone Backend** is a single-service Node.js API that powers a YouTube-style video platform — covering user registration and authentication, profile media (avatar/cover image) uploads, and **AI-powered video summarization**.
+
+Unlike a microservices system, this project runs as **one Express application** with a strict **layered architecture**: requests flow from routes → controllers → services → repositories → the database, keeping business logic, data access, and HTTP handling cleanly separated. External capabilities — file storage, transcription, and summarization — are delegated to **Cloudinary**, **AssemblyAI**, and **Google Gemini** respectively.
 
 ---
 
 ## 🎯 Key Features
 
 ### 👤 User Management & Authentication
-- ✅ Secure user registration with email validation
-- ✅ Password hashing using bcrypt
-- ✅ JWT-based authentication (Access + Refresh tokens)
-- ✅ HTTP-only cookie storage for enhanced security
-- ✅ Token refresh mechanism for persistent sessions
-- ✅ Logout with token invalidation
+- Registration with unique username + Gmail-validated email
+- Password hashing via **bcrypt**
+- **JWT access + refresh token** authentication
+- Refresh tokens readable from cookies or request body
+- Logout with token invalidation
 
-### 📹 Video Management  
-- ✅ Video upload with metadata
-- ✅ Thumbnail generation & storage
-- ✅ Video metadata management
-- ✅ View tracking & analytics
-- ✅ Publishing control
+### 📹 Video & Subscription Data
+- Video metadata modeled via Mongoose (`video.models.js`)
+- Channel subscriptions modeled via `subscription.models.js`
+- Repository layer isolates all direct database queries
 
-### 🤖 AI Video Summarization *(NEW)*
-- ✅ Automatic speech-to-text transcription (AssemblyAI)
-- ✅ Intelligent summary generation (Google Gemini 2.5 Flash)
-- ✅ Structured summaries with key points
-- ✅ Transcript storage & retrieval
-- ✅ Async processing with polling
-
-### 🔒 Security & Quality
-- ✅ CORS protection & middleware
-- ✅ Input validation & sanitization
-- ✅ Error handling & logging
-- ✅ Rate limiting ready
-- ✅ Clean architecture patterns
+### 🤖 AI Video Summarization
+- Speech-to-text transcription via **AssemblyAI**
+- Summary generation via **Google Gemini 2.5 Flash**
+- Summaries persisted on the video document and retrievable on demand
+- Async generation with a separate retrieval endpoint
 
 ### 📦 Media Handling
-- ✅ Cloudinary integration for file storage
-- ✅ Multipart form data handling
-- ✅ Avatar & cover image uploads
-- ✅ Automatic image optimization
+- **Multer** for multipart form parsing
+- **Cloudinary** for avatar/cover image storage
+- Structured `{ url, publicId }` shape for stored media
+
+### 🔒 Security & Response Consistency
+- CORS restricted to a configured frontend origin
+- Custom `apiError` and `apiResponse` classes for uniform payloads
+- `asyncHandler` wrapper to centralize error handling across controllers
 
 ---
 
-## 🛠️ Technology Stack
+## 🏗️ Architecture
 
-<table>
-<tr>
-<td align="center" width="25%">
-  <img src="https://nodejs.org/static/logos/logo-green.png" height="60"/><br/>
-  <strong>Node.js</strong><br/>
-  Runtime
-</td>
-<td align="center" width="25%">
-  <img src="https://expressjs.com/images/express-facebook-share.png" height="60"/><br/>
-  <strong>Express.js</strong><br/>
-  Web Framework
-</td>
-<td align="center" width="25%">
-  <img src="https://www.mongodb.com/assets/mongodb-logo.png" height="60"/><br/>
-  <strong>MongoDB</strong><br/>
-  Database
-</td>
-<td align="center" width="25%">
-  <img src="https://jwt.io/img/pic_logo.svg" height="60"/><br/>
-  <strong>JWT</strong><br/>
-  Authentication
-</td>
-</tr>
-</table>
+```mermaid
+flowchart TB
+    Client["🖥️ CLIENT<br/>Web · Mobile · Postman · cURL"]
 
-**Core Dependencies:**
-- `Express.js` - Web framework
-- `MongoDB` + `Mongoose` - Database & ODM
-- `JWT` - Token authentication
-- `Bcrypt` - Password hashing
-- `Multer` - File uploads
-- `Cloudinary` - Media storage
-- `Axios` - HTTP client
-- `@google/generative-ai` - AI summarization
+    Client -->|"All Requests → :8000"| App
 
----
+    subgraph App["🎬 EXPRESS APP  [ :8000 ]"]
+        direction LR
+        M1["CORS +<br/>Body/Cookie Parsing"] --> M2["Router<br/>/api/v1/user, /api/v1/videos"] --> M3["Controller<br/>Validation & Response"] --> M4["Service Layer<br/>Business Logic"] --> M5["Repository Layer<br/>DB Queries"]
+    end
 
-## 🚀 Quick Start
+    M5 --> DB[("MongoDB<br/>(users, videos,<br/>subscriptions)")]
 
-### Prerequisites
-- Node.js 18+
-- MongoDB (local or Atlas)
-- Cloudinary account
-- AssemblyAI account (for summarization)
-- Google Gemini API key
+    M4 -->|upload| Cloudinary["☁️ Cloudinary<br/>Avatar / Cover Images"]
+    M4 -->|transcribe| AssemblyAI["🎙️ AssemblyAI<br/>Speech-to-Text"]
+    M4 -->|summarize| Gemini["✨ Gemini 2.5 Flash<br/>Summary Generation"]
 
-### Installation
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd "Youtube Clone"
-
-# Install dependencies
-npm install
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your credentials
-
-# Start development server
-npm run dev
+    style Client fill:#1f2937,stroke:#60a5fa,color:#fff
+    style App fill:#111827,stroke:#a78bfa,color:#fff
+    style DB fill:#1e3a8a,stroke:#60a5fa,color:#fff
+    style Cloudinary fill:#7c2d12,stroke:#fb923c,color:#fff
+    style AssemblyAI fill:#312e81,stroke:#818cf8,color:#fff
+    style Gemini fill:#4c1d95,stroke:#c084fc,color:#fff
 ```
 
-Server will start on `http://localhost:8000`
+---
+
+## 🧩 Layer Responsibilities
+
+### 🚪 Routes — `src/routes/`
+Maps HTTP verbs and paths (`user.routes.js`) to controller functions. No logic lives here beyond wiring middleware (e.g. `multer`, `auth`) to a handler.
 
 ---
 
-## 🔑 Environment Configuration
+### 🎯 Controllers — `src/controllers/`
+Parses and validates requests (`user.controllers.js`, `summary.controller.js`), calls into the service layer, and shapes the final `apiResponse`/`apiError` payload. Wrapped in `asyncHandler` so thrown errors reach a central handler.
+
+---
+
+### ⚙️ Services — `src/services/`
+Holds business logic and third-party orchestration (`summary.service.js`) — e.g. kicking off AssemblyAI transcription, then passing the transcript to Gemini for summarization.
+
+---
+
+### 🗄️ Repositories — `src/repositories/`
+Owns all direct database access (`video.repository.js`), keeping Mongoose queries out of controllers and services.
+
+---
+
+### 🧱 Models — `src/models/`
+Mongoose schemas for `user.models.js`, `video.models.js`, and `subscription.models.js`.
+
+---
+
+### 🛠️ Utils & Middlewares
+- `apiErrors.js` / `apiResponse.js` — consistent success/error payload shapes
+- `asyncHandler.js` — wraps async route handlers
+- `cloudinary.js` — upload helper
+- `isgmail.js` — email domain validation
+- `assemblyai.js` / `gemini.js` — AI provider clients
+- `autho.middlewares.js` — JWT verification
+- `multer.middlewares.js` — multipart upload handling
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Role |
+|:-----------|:-----|
+| **Node.js** | Runtime |
+| **Express.js** | HTTP server framework |
+| **MongoDB + Mongoose** | Database & ODM |
+| **JWT (jsonwebtoken)** | Access + refresh token authentication |
+| **bcrypt** | Password hashing |
+| **Multer** | Multipart form / file upload handling |
+| **Cloudinary** | Avatar & cover image storage |
+| **AssemblyAI** | Speech-to-text transcription |
+| **@google/generative-ai (Gemini 2.5 Flash)** | AI-generated video summaries |
+| **Axios** | HTTP client for provider calls |
+
+---
+
+## ✅ Prerequisites
+
+Before running the project, make sure the following are available:
+
+```
+Node.js       ≥ 18.x    →  https://nodejs.org
+npm           ≥ 9.x     →  comes with Node.js
+MongoDB       any        →  local instance or MongoDB Atlas
+Cloudinary    account    →  https://cloudinary.com
+AssemblyAI    account    →  https://www.assemblyai.com
+Google Gemini API key    →  https://ai.google.dev
+```
+
+Verify installations:
+```bash
+node --version
+npm --version
+mongod --version
+```
+
+---
+
+## 🚀 Installation & Setup
+
+### Step 1 — Clone the Repository
+
+```bash
+git clone <your-repo-url>
+cd "Youtube Clone"
+```
+
+### Step 2 — Install Dependencies
+
+```bash
+npm install
+```
+
+### Step 3 — Configure Environment Variables
+
+```bash
+cp .env.example .env
+# Edit .env with your MongoDB, JWT, Cloudinary, AssemblyAI, and Gemini credentials
+```
+
+See [Environment Configuration](#-environment-configuration) below for the full variable list.
+
+### Step 4 — Start the Server
+
+```bash
+# Development (hot reload via nodemon)
+npm run dev
+
+# Production
+npm run start
+```
+
+### Step 5 — Verify the Server Is Running
+
+```bash
+curl http://localhost:8000/api/v1/user/login
+# → a JSON response confirms the server and routes are reachable
+```
+
+---
+
+## 🔧 Environment Configuration
+
+### Root `.env`
 
 ```env
 # Server
@@ -146,12 +263,12 @@ MONGODB_URI=mongodb://localhost:27017/youtube-clone
 
 # Authentication
 ACCESS_TOKEN_SECRET=your_strong_secret_key
-ACCESS_TOKEN_EXPIRY=7d
+ACCESS_TOKEN_EXPIRY=1d
 REFRESH_TOKEN_SECRET=your_refresh_secret
-REFRESH_TOKEN_EXPIRY=30d
+REFRESH_TOKEN_EXPIRY=10d
 
 # Media Storage
-CLOUDINARY_NAME=your_cloud_name
+CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
@@ -160,431 +277,51 @@ ASSEMBLYAI_API_KEY=your_assemblyai_key
 GEMINI_API_KEY=your_gemini_key
 ```
 
-📋 See [.env.example](./.env.example) for complete configuration template
+| Variable | Required | Description |
+|:---------|:--------:|:-------------|
+| `PORT` | Yes | Port used by the Express server |
+| `MONGODB_URI` | Yes | Full MongoDB connection string used by Mongoose |
+| `CORS_ORIGIN` | Yes | Frontend origin allowed to make credentialed cross-origin requests |
+| `ACCESS_TOKEN_SECRET` | Yes | Secret used to sign access tokens |
+| `ACCESS_TOKEN_EXPIRY` | Yes | Access token lifetime (e.g. `15m`, `1h`, `1d`) |
+| `REFRESH_TOKEN_SECRET` | Yes | Secret used to sign refresh tokens — keep distinct from the access secret |
+| `REFRESH_TOKEN_EXPIRY` | Yes | Refresh token lifetime (e.g. `10d`) |
+| `CLOUDINARY_CLOUD_NAME` | Yes | Cloudinary cloud name for media uploads |
+| `CLOUDINARY_API_KEY` | Yes | Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | Yes | Cloudinary API secret — never commit this value |
+| `ASSEMBLYAI_API_KEY` | Yes | AssemblyAI key for transcription |
+| `GEMINI_API_KEY` | Yes | Google Gemini key for summary generation |
 
 ---
 
-## 📡 API Reference
+## 🛣️ API Routes
 
-### Authentication Endpoints
+> **Base URL:** `http://localhost:8000`
 
-#### Register User
+---
+
+### 🟢 Public Routes — No Token Required
+
+#### 👤 User Auth → `/api/v1/user`
+
+| Method | Endpoint | Description |
+|:------:|:---------|:------------|
+| `POST` | `/api/v1/user/register` | Register a new user (multipart form) |
+| `POST` | `/api/v1/user/login` | Login with email or username |
+| `POST` | `/api/v1/user/refresh-token` | Exchange a refresh token for a new token pair |
+
+**Register**
 ```http
-POST /api/v1/user/register
-Content-Type: application/json
+POST http://localhost:8000/api/v1/user/register
+Content-Type: multipart/form-data
 
-{
-  "username": "john_doe",
-  "email": "john@example.com",
-  "fullName": "John Doe",
-  "password": "SecurePassword123",
-  "avatar": "file",
-  "coverImage": "file"
-}
+fullName: "Ritesh Tyagi"
+email: "ritesh@gmail.com"
+username: "ritesh"
+password: "SecurePassword123"
+avatar: <file>          # required
+coverImage: <file>      # optional
 ```
-
-#### Login
-```http
-POST /api/v1/user/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "SecurePassword123"
-}
-```
-
-#### Refresh Token
-```http
-POST /api/v1/user/refresh-token
-```
-
-#### Logout
-```http
-POST /api/v1/user/logout
-```
-
-### Video Summarization Endpoints *(NEW)*
-
-#### Generate Summary
-```http
-POST /api/v1/videos/:videoId/generate-summary
-
-Response: 200 OK
-{
-  "data": {
-    "videoId": "...",
-    "summary": "...",
-    "generatedAt": "2026-06-04T10:30:00Z"
-  },
-  "message": "Video summary generated successfully",
-  "statusCode": 200
-}
-```
-
-#### Get Summary
-```http
-GET /api/v1/videos/:videoId/summary
-
-Response: 200 OK
-{
-  "data": {
-    "summary": "...",
-    "generatedAt": "2026-06-04T10:30:00Z"
-  },
-  "message": "Video summary retrieved successfully",
-  "statusCode": 200
-}
-```
-
----
-
-## 🏗️ Architecture
-
-### Project Structure
-
-```
-Youtube Clone/
-├── src/
-│   ├── controllers/          # Request handlers
-│   │   ├── user.controllers.js
-│   │   └── summary.controller.js    ✨ AI Summarization
-│   │
-│   ├── services/             # Business logic
-│   │   └── summary.service.js       ✨ AI Summarization
-│   │
-│   ├── repositories/         # Data layer
-│   │   └── video.repository.js      ✨ AI Summarization
-│   │
-│   ├── models/               # Database schemas
-│   │   ├── user.models.js
-│   │   └── video.models.js          (updated with AI fields)
-│   │
-│   ├── routes/               # API route definitions
-│   │   ├── user.routes.js
-│   │   └── summary.routes.js        ✨ AI Summarization
-│   │
-│   ├── utils/                # Helper utilities
-│   │   ├── apiErrors.js
-│   │   ├── apiResponse.js
-│   │   ├── asyncHandler.js
-│   │   ├── cloudinary.js
-│   │   ├── assemblyai.js           ✨ Transcription
-│   │   └── gemini.js               ✨ AI Summarization
-│   │
-│   ├── middlewares/          # Custom middleware
-│   ├── db/                   # Database connection
-│   ├── constants.js          # Global constants
-│   ├── app.js                # Express app setup
-│   └── index.js              # Server entry point
-│
-├── public/                   # Static files
-├── .env.example              # Environment template
-├── package.json
-└── README.md
-```
-
-### Request Flow
-
-```
-HTTP Request
-    ↓
-[Express Middleware]
-  ├─ CORS validation
-  ├─ Body parsing
-  └─ Cookie parsing
-    ↓
-[Route Handler]
-  └─ Route matching
-    ↓
-[Controller]
-  ├─ Input validation
-  ├─ Error handling
-  └─ Response formatting
-    ↓
-[Service Layer]
-  ├─ Business logic
-  ├─ API orchestration
-  └─ Data transformation
-    ↓
-[Repository Layer]
-  ├─ Database operations
-  ├─ Query execution
-  └─ Error handling
-    ↓
-[Database]
-  └─ MongoDB operations
-    ↓
-[Response]
-  └─ JSON formatted response
-```
-
----
-
-## 🔐 Security Features
-
-- **Password Security**: Bcrypt hashing with salt rounds
-- **JWT Tokens**: Secure token-based authentication
-- **HTTP-Only Cookies**: Protected from XSS attacks
-- **CORS**: Cross-origin resource sharing control
-- **Input Validation**: Comprehensive input sanitization
-- **Error Handling**: Secure error messages (no sensitive data leaks)
-
----
-
-## 📊 Performance
-
-| Operation | Response Time | Notes |
-|-----------|---------------|-------|
-| User Login | < 100ms | Cached queries |
-| Get Video | < 50ms | Direct DB lookup |
-| Generate Summary | 30-120s | First-time only |
-| Retrieve Summary | < 1s | Cached in database |
-
----
-
-## 🧪 Testing
-
-### Using Postman
-1. Import [postman_collection.json](./postman_collection.json)
-2. Configure environment variables
-3. Run requests in sequence
-
-### Using cURL
-```bash
-# Register user
-curl -X POST http://localhost:8000/api/v1/user/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"Test@123"}'
-
-# Login
-curl -X POST http://localhost:8000/api/v1/user/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"Test@123"}'
-
-# Generate summary
-curl -X POST http://localhost:8000/api/v1/videos/VIDEO_ID/generate-summary
-```
-
----
-
-## 🌍 Environment Modes
-
-### Development
-```bash
-npm run dev
-```
-- Hot reload enabled
-- Verbose logging
-- Development database
-
-### Production
-```bash
-npm run start
-```
-- Optimized builds
-- Production database
-- Error monitoring enabled
-
----
-
-## 📚 Documentation
-
-- **[Setup Guide](./SETUP_CHECKLIST.md)** - Detailed setup instructions
-- **[API Guide](./SUMMARIZATION_FEATURE_GUIDE.md)** - Complete API documentation  
-- **[Architecture](./IMPLEMENTATION_COMPLETE.md)** - System architecture details
-- **[Verification Report](./VERIFICATION_REPORT.md)** - Implementation verification
-
----
-
-## 🐛 Error Handling
-
-Comprehensive error handling across the application:
-
-| Error | Status | Resolution |
-|-------|--------|-----------|
-| Invalid input | 400 | Check request format |
-| Unauthorized | 401 | Login required |
-| Forbidden | 403 | Insufficient permissions |
-| Not found | 404 | Resource doesn't exist |
-| Conflict | 409 | Duplicate entry |
-| Server error | 500 | Check server logs |
-
----
-
-## 🚦 Status Codes
-
-- **2xx Success** - Request succeeded
-- **4xx Client Error** - Client request error
-- **5xx Server Error** - Server-side error
-
----
-
-## 📦 Dependencies
-
-```json
-{
-  "production": [
-    "express@^5.2.1",
-    "mongoose@^9.1.4",
-    "bcrypt@^6.0.0",
-    "jsonwebtoken@^9.0.3",
-    "multer@^2.0.2",
-    "cloudinary@^2.9.0",
-    "axios@^1.6.2",
-    "@google/generative-ai@^0.3.0"
-  ],
-  "dev": [
-    "nodemon@^3.1.11",
-    "prettier@^3.8.0"
-  ]
-}
-```
-
----
-
-## 🎓 Learning Resources
-
-- [Express.js Documentation](https://expressjs.com/)
-- [MongoDB Tutorial](https://docs.mongodb.com/)
-- [JWT Authentication](https://jwt.io/)
-- [Mongoose Guide](https://mongoosejs.com/)
-- [REST API Best Practices](https://restfulapi.net/)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Follow these steps:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Code Standards
-- Use ESM (ES Modules)
-- Follow async/await patterns
-- Add meaningful comments
-- Test before submitting
-- Follow project structure
-
----
-
-## 📝 License
-
-This project is licensed under the **ISC License** - see [package.json](./package.json) for details
-
----
-
-## 👨‍💻 Author
-
-**Ritesh Tyagi**
-- GitHub: [@riteshtyagi](https://github.com)
-- Portfolio: [Your Portfolio](https://yourportfolio.com)
-
----
-
-## 🙌 Acknowledgments
-
-- Express.js community
-- MongoDB documentation
-- Google Cloud AI team
-- AssemblyAI team
-- All contributors
-
----
-
-## 📞 Support
-
-Need help? Create an [issue](./issues) or check existing [documentation](./docs)
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Video recommendation engine
-- [ ] Comment system
-- [ ] Playlist management
-- [ ] Subscription system
-- [ ] Live streaming
-- [ ] Advanced analytics
-- [ ] Mobile app API optimization
-
----
-
-## ⚡ Performance Tips
-
-1. **Use indexes** in MongoDB for frequently queried fields
-2. **Enable caching** for video metadata
-3. **Optimize** image sizes before upload
-4. **Use pagination** for list endpoints
-5. **Implement rate limiting** for API protection
-
----
-
-<div align="center">
-
-### Made with ❤️ using Node.js & Express
-
-**[⬆ Back to top](#-youtube-clone-backend)**
-
-</div>
-npm run dev
-```
-
-The API will start on:
-
-```text
-http://localhost:<PORT>
-```
-
-## Environment Variables
-
-The application reads its configuration from the root `.env` file.
-
-| Variable | Required | Example | Description |
-| --- | --- | --- | --- |
-| `PORT` | Yes | `8000` | Port used by the Express server. |
-| `MONGODB_URL` | Yes | `mongodb+srv://user:pass@cluster/db` | Full MongoDB connection string used by Mongoose. |
-| `CORS_ORIGIN` | Yes | `http://localhost:3000` | Frontend origin allowed to make cross-origin requests with credentials. |
-| `ACCESS_TOKEN_SECRET` | Yes | `super_secret_access_key` | Secret used to sign access tokens. Use a long random string in production. |
-| `ACCESS_TOKEN_EXPIRY` | Yes | `1d` | Access token lifetime passed to JWT, such as `15m`, `1h`, or `1d`. |
-| `REFRESH_TOKEN_SECRET` | Yes | `super_secret_refresh_key` | Secret used to sign refresh tokens. Keep it different from the access token secret. |
-| `REFRESH_TOKEN_EXPIRY` | Yes | `10d` | Refresh token lifetime passed to JWT. |
-| `CLOUDINARY_CLOUD_NAME` | Yes | `my-cloud-name` | Cloudinary cloud name used for media uploads. |
-| `CLOUDINARY_API_KEY` | Yes | `123456789012345` | Cloudinary API key. |
-| `CLOUDINARY_API_SECRET` | Yes | `cloudinary_secret_value` | Cloudinary API secret. Never commit this value. |
-
-## API Documentation
-
-Base URL:
-
-```text
-http://localhost:<PORT>/api/v1/user
-```
-
-### 1. Register User
-
-- Method: `POST`
-- Route: `/register`
-- Auth Required: `No`
-- Content-Type: `multipart/form-data`
-
-#### Request Fields
-
-| Field | Type | Required | Description |
-| --- | --- | --- | --- |
-| `fullName` | `string` | Yes | Full name of the user |
-| `email` | `string` | Yes | Must be a valid Gmail address |
-| `username` | `string` | Yes | Unique username |
-| `password` | `string` | Yes | User password |
-| `avatar` | `file` | Yes | Profile image |
-| `coverImage` | `file` | No | Cover image |
-
-#### Example Response
-
 ```json
 {
   "data": {
@@ -592,17 +329,9 @@ http://localhost:<PORT>/api/v1/user
     "username": "ritesh",
     "email": "ritesh@gmail.com",
     "fullName": "Ritesh Tyagi",
-    "avatar": {
-      "url": "https://res.cloudinary.com/demo/image/upload/avatar.jpg",
-      "publicId": "avatar_public_id"
-    },
-    "coverImage": {
-      "url": "https://res.cloudinary.com/demo/image/upload/cover.jpg",
-      "publicId": "cover_public_id"
-    },
-    "watchHistory": [],
-    "createdAt": "2026-04-03T10:00:00.000Z",
-    "updatedAt": "2026-04-03T10:00:00.000Z"
+    "avatar": { "url": "https://res.cloudinary.com/.../avatar.jpg", "publicId": "avatar_public_id" },
+    "coverImage": { "url": "https://res.cloudinary.com/.../cover.jpg", "publicId": "cover_public_id" },
+    "watchHistory": []
   },
   "statusCode": 201,
   "message": "User registered successfully",
@@ -610,35 +339,22 @@ http://localhost:<PORT>/api/v1/user
 }
 ```
 
-### 2. Login User
+**Login**
+```http
+POST http://localhost:8000/api/v1/user/login
+Content-Type: application/json
 
-- Method: `POST`
-- Route: `/login`
-- Auth Required: `No`
-- Content-Type: `application/json`
-
-#### Request Body
-
-```json
 {
   "email": "ritesh@gmail.com",
-  "password": "your_password"
+  "password": "SecurePassword123"
 }
 ```
-
-You can also log in with `username` instead of `email`.
-
-#### Example Response
+> You can log in with `username` instead of `email`.
 
 ```json
 {
   "data": {
-    "user": {
-      "_id": "67cabc1234567890abcdef12",
-      "username": "ritesh",
-      "email": "ritesh@gmail.com",
-      "fullName": "Ritesh Tyagi"
-    },
+    "user": { "_id": "67cabc1234567890abcdef12", "username": "ritesh", "email": "ritesh@gmail.com" },
     "accessToken": "jwt_access_token",
     "refreshToken": "jwt_refresh_token"
   },
@@ -648,116 +364,149 @@ You can also log in with `username` instead of `email`.
 }
 ```
 
-### 3. Logout User
+---
 
-- Method: `POST`
-- Route: `/logout`
-- Auth Required: `Yes`
-- Content-Type: `application/json`
+### 🔴 Protected Routes — Token Required
 
-#### Auth Header
+> Pass the access token as `Authorization: Bearer <token>`, or rely on the HTTP-only cookie.
+
+| Method | Endpoint | Description |
+|:------:|:---------|:------------|
+| `POST` | `/api/v1/user/logout` | Invalidate the current session |
+| `POST` | `/api/v1/videos/:videoId/generate-summary` | Transcribe + summarize a video |
+| `GET` | `/api/v1/videos/:videoId/summary` | Retrieve a previously generated summary |
 
 ```http
+POST http://localhost:8000/api/v1/user/logout
 Authorization: Bearer <access_token>
 ```
+```json
+{ "data": {}, "statusCode": 200, "message": "User loggedout", "success": true }
+```
 
-The route also supports access token lookup from cookies.
-
-#### Example Response
-
+```http
+POST http://localhost:8000/api/v1/videos/VIDEO_ID/generate-summary
+```
 ```json
 {
-  "data": {},
-  "statusCode": 200,
-  "message": "User loggedout",
-  "success": true
+  "data": { "videoId": "...", "summary": "...", "generatedAt": "2026-08-04T10:30:00Z" },
+  "message": "Video summary generated successfully",
+  "statusCode": 200
 }
 ```
 
-### 4. Refresh Access Token
+> ⚡ Generation can take **30–120 seconds** on first run; retrieval afterward is near-instant since the summary is cached on the document.
 
-- Method: `POST`
-- Route: `/refresh-token`
-- Auth Required: `No`
-- Content-Type: `application/json`
+---
 
-#### Request Body
+## 🔑 Authentication Flow
 
-```json
-{
-  "refreshToken": "jwt_refresh_token"
-}
+```
+  Client                Express App           Auth Middleware        Controller
+    │                       │                       │                    │
+    ├──POST /register───────▶│                       │                    │
+    │                       ├──────forward───────────────────────────────▶│
+    │◀────201 Created────────┤◀─────────user created──────────────────────┤
+    │                       │                       │                    │
+    ├──POST /login───────────▶│                       │                    │
+    │                       ├──────forward───────────────────────────────▶│
+    │◀──{ accessToken, refreshToken }─────────────────────────────────────┤
+    │                       │                       │                    │
+    ├──POST /logout──────────▶│                       │                    │
+    │  Authorization: Bearer  ├────verify JWT─────────▶│                    │
+    │                       │◀───{ valid: true }─────┤                    │
+    │                       ├──────forward───────────────────────────────▶│
+    │◀──── logged out ────────┤◀─────────token cleared─────────────────────┤
 ```
 
-The refresh token may also be supplied through cookies.
+---
 
-#### Example Response
+## 🤖 AI Summarization Flow
 
-```json
-{
-  "data": {
-    "accessToken": "new_access_token",
-    "refreshToken": "new_refresh_token"
-  },
-  "statusCode": 200,
-  "message": "Access token refreshed",
-  "success": true
-}
+```
+  Controller             Service Layer            AssemblyAI              Gemini
+      │                       │                       │                     │
+      ├──generate-summary─────▶│                       │                     │
+      │                       ├──submit audio─────────▶│                     │
+      │                       │◀── transcript ready ───┤                     │
+      │                       ├──send transcript──────────────────────────▶│
+      │                       │◀──────────── structured summary ────────────┤
+      │◀──save + respond──────┤                       │                     │
 ```
 
-## Project Structure
+The controller returns immediately once the summary is generated and persisted; subsequent `GET .../summary` calls read the cached result from MongoDB instead of re-running transcription.
 
-```text
+---
+
+## 📁 Project Structure
+
+```
 Youtube Clone/
-|-- public/
-|   `-- assets/
-|-- src/
-|   |-- controllers/
-|   |   `-- user.controllers.js
-|   |-- db/
-|   |   `-- index.js
-|   |-- middlewares/
-|   |   |-- autho.middlewares.js
-|   |   `-- multer.middlewares.js
-|   |-- models/
-|   |   |-- subscription.models.js
-|   |   |-- user.models.js
-|   |   `-- video.models.js
-|   |-- routes/
-|   |   `-- user.routes.js
-|   |-- utils/
-|   |   |-- apiErrors.js
-|   |   |-- apiResponse.js
-|   |   |-- asyncHandler.js
-|   |   |-- cloudinary.js
-|   |   `-- isgmail.js
-|   |-- app.js
-|   |-- constants.js
-|   `-- index.js
-|-- .env
-|-- .gitignore
-|-- package.json
-|-- package-lock.json
-`-- Readme.md
+│
+├── public/
+│   └── assets/
+│
+├── src/
+│   ├── controllers/
+│   │   ├── user.controllers.js
+│   │   └── summary.controller.js        ✨ AI Summarization
+│   │
+│   ├── services/
+│   │   └── summary.service.js           ✨ AI Summarization
+│   │
+│   ├── repositories/
+│   │   └── video.repository.js
+│   │
+│   ├── models/
+│   │   ├── user.models.js
+│   │   ├── video.models.js
+│   │   └── subscription.models.js
+│   │
+│   ├── routes/
+│   │   └── user.routes.js
+│   │
+│   ├── middlewares/
+│   │   ├── autho.middlewares.js         ← JWT verification
+│   │   └── multer.middlewares.js        ← Multipart upload handling
+│   │
+│   ├── utils/
+│   │   ├── apiErrors.js
+│   │   ├── apiResponse.js
+│   │   ├── asyncHandler.js
+│   │   ├── cloudinary.js
+│   │   ├── isgmail.js
+│   │   ├── assemblyai.js                ✨ Transcription
+│   │   └── gemini.js                    ✨ AI Summarization
+│   │
+│   ├── db/
+│   │   └── index.js                     ← MongoDB connection
+│   │
+│   ├── constants.js
+│   ├── app.js                           ← Express app setup
+│   └── index.js                         ← Server entry point
+│
+├── .env
+├── .env.example
+├── .gitignore
+├── package.json
+├── package-lock.json
+└── README.md
 ```
 
-## Error Handling
+---
 
-The project defines a custom `apiError` class for structured application errors and an `apiResponse` class for successful responses.
+## ❌ Error Reference
 
-### Success Response Format
+| Code | Message | Cause |
+|:----:|:--------|:------|
+| `400` | `Invalid input` | Malformed or missing request fields |
+| `401` | `Unauthorized` | Missing or expired access token |
+| `403` | `Forbidden` | Insufficient permissions |
+| `404` | `Not found` | Resource doesn't exist |
+| `409` | `Conflict` | Duplicate username/email |
+| `500` | `Internal Server Error` | Unhandled exception or DB failure |
 
-```json
-{
-  "data": {},
-  "statusCode": 200,
-  "message": "Success message",
-  "success": true
-}
-```
-
-### Error Object Shape Used in the Codebase
-
+**Standard error shape:**
 ```json
 {
   "statusCode": 400,
@@ -768,96 +517,28 @@ The project defines a custom `apiError` class for structured application errors 
 }
 ```
 
----
-
-## 🚀 Deployment
-
-### Deploy to Heroku
-
-```bash
-# Login to Heroku
-heroku login
-
-# Create app
-heroku create youtube-clone-api
-
-# Add environment variables
-heroku config:set MONGODB_URI=...
-heroku config:set CLOUDINARY_NAME=...
-
-# Deploy
-git push heroku main
+**Standard success shape:**
+```json
+{
+  "data": {},
+  "statusCode": 200,
+  "message": "Success message",
+  "success": true
+}
 ```
 
-### Deploy to Railway.app
-
-```bash
-# Install Railway CLI
-npm i -g @railway/cli
-
-# Login
-railway login
-
-# Create project
-railway init
-
-# Deploy
-railway up
-```
-
-### Environment Checklist
-- ✅ Set all required env variables
-- ✅ Use production MongoDB (Atlas)
-- ✅ Enable HTTPS
-- ✅ Set strong token secrets
-- ✅ Configure CORS for production domain
-- ✅ Enable logging & monitoring
-
 ---
 
-## 📦 Dependencies
+## 🔧 Troubleshooting
 
-All dependencies are already installed. Key packages:
-
-- **express** - Web framework
-- **mongoose** - MongoDB ODM
-- **bcrypt** - Password hashing
-- **jsonwebtoken** - JWT authentication
-- **multer** - File uploads
-- **cloudinary** - Media storage
-- **@google/generative-ai** - AI summarization
-- **axios** - HTTP client
-
----
-
-## 🎓 Learning Resources
-
-- [Express.js Docs](https://expressjs.com/)
-- [MongoDB Tutorial](https://docs.mongodb.com/)
-- [JWT Guide](https://jwt.io/)
-- [Mongoose Documentation](https://mongoosejs.com/)
-- [REST API Best Practices](https://restfulapi.net/)
-- [Google Gemini API](https://ai.google.dev/)
-- [AssemblyAI Docs](https://www.assemblyai.com/docs)
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how:
-
-1. **Fork** the repository
-2. **Create** feature branch: `git checkout -b feature/amazing-feature`
-3. **Commit** changes: `git commit -m 'Add amazing feature'`
-4. **Push** to branch: `git push origin feature/amazing-feature`
-5. **Open** Pull Request
-
-### Code Standards
-- ✅ Use ES Modules (import/export)
-- ✅ Follow async/await patterns
-- ✅ Add meaningful comments
-- ✅ Test your code
-- ✅ Keep commits atomic
+| Problem | Likely Cause | Fix |
+|:--------|:------------|:----|
+| `401 Unauthorized` on protected routes | Missing/expired access token | Re-authenticate via `/login` or `/refresh-token` |
+| `MongooseServerSelectionError` | MongoDB not running or wrong `MONGODB_URI` | Start MongoDB / verify Atlas connection string |
+| Avatar upload fails | Missing Cloudinary credentials | Check `CLOUDINARY_*` variables in `.env` |
+| `generate-summary` times out | AssemblyAI/Gemini key invalid or quota exceeded | Verify `ASSEMBLYAI_API_KEY` and `GEMINI_API_KEY` |
+| CORS errors from frontend | `CORS_ORIGIN` mismatch | Set `CORS_ORIGIN` to your frontend's exact origin |
+| `Port already in use` | Another process on `:8000` | `kill $(lsof -t -i:8000)` then restart |
 
 ---
 
@@ -866,92 +547,33 @@ We welcome contributions! Here's how:
 ```
 Phase 1 (Current) ✅
 ├── User authentication
-├── Video management
-└── AI summarization
+├── Media uploads
+└── AI video summarization
 
-Phase 2 (Q3 2026)
+Phase 2
 ├── Comment system
 ├── Playlist management
 └── Video recommendations
 
-Phase 3 (Q4 2026)
+Phase 3
 ├── Subscription system
 ├── Live streaming
 └── Advanced analytics
 
-Phase 4 (Q1 2027)
-├── Mobile app API
+Phase 4
+├── Mobile app API optimization
 ├── Webhook support
 └── GraphQL API
 ```
 
 ---
 
-## 📞 Support & Community
-
-- 📧 **Email**: support@example.com
-- 💬 **Discord**: [Join Server](https://discord.gg/example)
-- 🐛 **Issues**: [GitHub Issues](./issues)
-- 💡 **Discussions**: [GitHub Discussions](./discussions)
-
----
-
-## 📄 License
-
-This project is licensed under the **ISC License**. See [package.json](./package.json) for details.
-
-```
-ISC License
-
-Permission to use, copy, modify, and/or distribute this software for any 
-purpose with or without fee is hereby granted, provided that the above 
-copyright notice and this permission notice appear in all copies.
-```
-
----
-
-## 👨‍💻 Author
-
-**Ritesh Tyagi**
-
-- GitHub: [@riteshtyagi](https://github.com)
-- Portfolio: [yourportfolio.com](https://yourportfolio.com)
-- Email: your.email@example.com
-
----
-
-## 🙏 Acknowledgments
-
-- [Express.js](https://expressjs.com/) community
-- [MongoDB](https://www.mongodb.com/) documentation
-- [Google Cloud AI](https://cloud.google.com/ai) team
-- [AssemblyAI](https://www.assemblyai.com/) team
-- All amazing contributors
-
----
-
-## ⭐ Show Your Support
-
-If this project helped you, please give it a star! ⭐
-
-```bash
-# Clone & Star
-git clone <repository-url>
-# Add star on GitHub ⭐
-```
-
----
-
 <div align="center">
 
-### 🚀 Ready to build something amazing?
+**Built with Node.js · Express · MongoDB · Mongoose · Cloudinary · Gemini · AssemblyAI**
 
-**[Get Started](#quick-start)** • **[View Docs](./SUMMARIZATION_FEATURE_GUIDE.md)** • **[Report Issues](./issues)**
+*1 Service · Layered Architecture · AI-Powered*
 
----
-
-Made with ❤️ using **Node.js** • **Express** • **MongoDB** • **AI**
-
-[⬆ Back to top](#youtube-clone-backend)
+🎬 **Happy Streaming!** 🎬
 
 </div>

@@ -5,12 +5,6 @@ const ASSEMBLYAI_BASE_URL = "https://api.assemblyai.com/v2";
 const POLL_INTERVAL = 3000; // 3 seconds
 const MAX_POLL_ATTEMPTS = 120; // 6 minutes maximum wait
 
-/**
- * Submit a video URL for transcription to AssemblyAI
- * @param {string} videoUrl - The video URL to transcribe
- * @returns {Promise<string>} - The transcript ID for polling
- * @throws {apiError} - If submission fails
- */
 const submitTranscription = async (videoUrl) => {
       try {
             if (!videoUrl || videoUrl.trim() === "") {
