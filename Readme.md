@@ -109,21 +109,32 @@ flowchart TB
 
     subgraph App["🎬 EXPRESS APP  [ :8000 ]"]
         direction LR
-        M1["CORS +<br/>Body/Cookie Parsing"] --> M2["Router<br/>/api/v1/user, /api/v1/videos"] --> M3["Controller<br/>Validation & Response"] --> M4["Service Layer<br/>Business Logic"] --> M5["Repository Layer<br/>DB Queries"]
+        M1["CORS +<br/>Body/Cookie Parsing"] --> M2["Router<br/>/api/v1/user, /api/v1/videos"] --> M3["Controller<br/>Validation & Response"] --> M4["Service Layer<br/>Business Logic"]
     end
 
+    M4 --> M5["Repository Layer<br/>DB Queries"]
     M5 --> DB[("MongoDB<br/>(users, videos,<br/>subscriptions)")]
 
-    M4 -->|upload| Cloudinary["☁️ Cloudinary<br/>Avatar / Cover Images"]
-    M4 -->|transcribe| AssemblyAI["🎙️ AssemblyAI<br/>Speech-to-Text"]
-    M4 -->|summarize| Gemini["✨ Gemini 2.5 Flash<br/>Summary Generation"]
+    M4 -->|"avatar / cover upload"| Cloudinary["☁️ Cloudinary<br/>Avatar / Cover Images"]
+
+    M4 ==>|"POST /generate-summary"| AIPipeline
+
+    subgraph AIPipeline["🤖 AI SUMMARIZATION PIPELINE"]
+        direction LR
+        AssemblyAI["🎙️ AssemblyAI<br/><b>Step 1 — Speech-to-Text</b><br/>Transcribes video audio"]
+        Gemini["✨ Gemini 2.5 Flash<br/><b>Step 2 — Summarization</b><br/>Generates structured summary"]
+        AssemblyAI ==>|"transcript"| Gemini
+    end
+
+    AIPipeline ==>|"summary saved"| M5
 
     style Client fill:#1f2937,stroke:#60a5fa,color:#fff
     style App fill:#111827,stroke:#a78bfa,color:#fff
     style DB fill:#1e3a8a,stroke:#60a5fa,color:#fff
     style Cloudinary fill:#7c2d12,stroke:#fb923c,color:#fff
-    style AssemblyAI fill:#312e81,stroke:#818cf8,color:#fff
-    style Gemini fill:#4c1d95,stroke:#c084fc,color:#fff
+    style AIPipeline fill:#1e0a3c,stroke:#c084fc,stroke-width:3px,color:#fff
+    style AssemblyAI fill:#312e81,stroke:#818cf8,stroke-width:2px,color:#fff
+    style Gemini fill:#4c1d95,stroke:#c084fc,stroke-width:2px,color:#fff
 ```
 
 ---
